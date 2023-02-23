@@ -39,26 +39,29 @@ export const CreatePowerplant = () => {
   })
 
   const connectToDevice = async () => {
-    const device = await navigator.bluetooth
+    navigator.bluetooth
       .requestDevice({
         acceptAllDevices: true,
       })
       .then((device) => {
         console.log(`Name: ${device.name}`)
-        // Do something with the device.
+      })
+      .catch((error) => {
+        console.log("error", error)
       })
 
-    console.log(device)
-  }
-
-  const checkAvailability = () => {
-    navigator.bluetooth.getAvailability().then((available) => {
-      if (available) {
-        console.log("This device supports Bluetooth!")
-      } else {
-        console.log("Doh! Bluetooth is not supported")
-      }
-    })
+    navigator.bluetooth
+      .requestDevice({
+        acceptAllDevices: true,
+      })
+      .then((device) => {
+        console.log("> Name:             " + device.name)
+        console.log("> Id:               " + device.id)
+        console.log("> Connected:        " + device.gatt?.connected)
+      })
+      .catch((error) => {
+        console.log("Argh! " + error)
+      })
   }
 
   return (
@@ -115,7 +118,7 @@ export const CreatePowerplant = () => {
             sx={{ mt: 2, width: "100%" }}
             color="primary"
             variant="contained"
-            onClick={checkAvailability}
+            onClick={connectToDevice}
           >
             BLUETOOTH
           </Button>
