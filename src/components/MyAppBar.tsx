@@ -124,6 +124,11 @@ export const MyAppBar = () => {
                         <Typography textAlign="center">PROFILE</Typography>
                       </MenuItem>
                     </Link>,
+                    <Link key={"powerplantList"} to={PATHS.powerplantList}>
+                      <MenuItem onClick={handleCloseNavMenu}>
+                        <Typography textAlign="center">POWERPLANTS</Typography>
+                      </MenuItem>
+                    </Link>,
                   ]
                 : [
                     <Link key={"home"} to={PATHS.home}>
@@ -165,12 +170,12 @@ export const MyAppBar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {isLoggedIn
               ? [
-                  <Link key={"powerplant"} to={PATHS.powerplantCreate}>
+                  <Link key={"powerplantList"} to={PATHS.powerplantList}>
                     <Button
                       onClick={handleCloseNavMenu}
                       sx={{ my: 2, color: "white", display: "block" }}
                     >
-                      POWERPLANT
+                      POWERPLANTS
                     </Button>
                   </Link>,
                   <Link key={"home"} to={PATHS.home}>
@@ -191,14 +196,6 @@ export const MyAppBar = () => {
                   </Link>,
                 ]
               : [
-                  <Link key={"powerplant"} to={PATHS.powerplantCreate}>
-                    <Button
-                      onClick={handleCloseNavMenu}
-                      sx={{ my: 2, color: "white", display: "block" }}
-                    >
-                      POWERPLANT
-                    </Button>
-                  </Link>,
                   <Link key={"login"} to={PATHS.login}>
                     <Button
                       onClick={handleCloseNavMenu}

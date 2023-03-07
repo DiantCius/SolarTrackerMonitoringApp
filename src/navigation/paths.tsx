@@ -4,4 +4,5 @@ export const PATHS = {
   register: "/register",
   profile: "/profile",
   powerplantCreate: "/powerplant/create",
+  powerplantList: "/powerplant/all",
 }
