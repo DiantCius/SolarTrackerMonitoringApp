@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import { Login } from "../sites/auth/Login"
 import { Register } from "../sites/auth/Register"
 import { Home } from "../sites/Home"
+import { ConfigurePowerplant } from "../sites/powerplant/ConfigurePowerplant"
 import { CreatePowerplant } from "../sites/powerplant/CreatePowerplant"
 import { PowerplantList } from "../sites/powerplant/PowerplantList"
 import { Profile } from "../sites/Profile"
@@ -17,6 +18,10 @@ export const AppRouter = () => {
       <Route path={PATHS.profile} element={<Profile />} />
       <Route path={PATHS.powerplantCreate} element={<CreatePowerplant />} />
       <Route path={PATHS.powerplantList} element={<PowerplantList />} />
+      <Route
+        path={PATHS.powerplantConfigure}
+        element={<ConfigurePowerplant />}
+      />
     </Routes>
   )
 }

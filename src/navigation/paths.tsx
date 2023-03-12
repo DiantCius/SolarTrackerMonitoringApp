@@ -5,4 +5,5 @@ export const PATHS = {
   profile: "/profile",
   powerplantCreate: "/powerplant/create",
   powerplantList: "/powerplant/all",
+  powerplantConfigure: "/powerplant/configure/:id",
 }

@@ -66,7 +66,13 @@ export const PowerplantList = () => {
                     e.connectionStatus == 1 ? (
                       <Typography>Online</Typography>
                     ) : (
-                      <Button>Configure</Button>
+                      <Button
+                        onClick={() => {
+                          navigate(PATHS.powerplantConfigure)
+                        }}
+                      >
+                        Configure
+                      </Button>
                     )
                   }
                 >
