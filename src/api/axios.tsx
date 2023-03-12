@@ -2,7 +2,7 @@ import axios from "axios"
 import { redirect } from "react-router-dom"
 import { PATHS } from "../navigation/paths"
 
-axios.defaults.baseURL = "http://solarsystem.somee.com"
+axios.defaults.baseURL = "https://solarsystem.somee.com"
 //axios.defaults.baseURL = "https://localhost:7227"
 
 axios.interceptors.request.use(
