@@ -31,15 +31,12 @@ export const ConfigurePowerplant = () => {
 
   const connectToDevice = async () => {
     device = await navigator.bluetooth.requestDevice({
-      // filters: [
-      //   {
-
-      //     name: "SOLAR TRACKER DRIVER",
-      //     services: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
-      //   },
-
-      // ],
-      acceptAllDevices: true,
+      filters: [
+        {
+          name: "SOLAR TRACKER DRIVER",
+          services: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
+        },
+      ],
     })
     console.log("requested device")
     server = await device.gatt.connect()
