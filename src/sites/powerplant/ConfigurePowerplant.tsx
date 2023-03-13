@@ -14,7 +14,7 @@ type ConfigurePowerplantFormProps = {
 
 const configurePowerplantValidationSchema = Yup.object().shape({
   ssid: Yup.string().required("ssid of network is requried"),
-  serialNumber: Yup.string().required("pass of network is required"),
+  pass: Yup.string().required("pass of network is required"),
 })
 
 export const ConfigurePowerplant = () => {
@@ -74,10 +74,12 @@ export const ConfigurePowerplant = () => {
       ssid: props.ssid,
       pass: props.pass,
     }
+    console.log("thing:", thing)
+    console.log("characteristic", characteristic)
     await characteristic.writeValue(encoder.encode(JSON.stringify(thing)))
   }
 
-  const onConfigureClick = (props: ConfigurePowerplantFormProps) => {
+  const onSubmit = (props: ConfigurePowerplantFormProps) => {
     console.log("configure props:", props)
     configureDriver(props)
   }
@@ -123,7 +125,7 @@ export const ConfigurePowerplant = () => {
             sx={{ mt: 2, width: "100%" }}
             id="pass"
             label="pass"
-            type="pass"
+            type="password"
             {...register("pass")}
             error={errors.pass ? true : false}
           />
@@ -134,7 +136,7 @@ export const ConfigurePowerplant = () => {
             sx={{ mt: 2, width: "100%" }}
             color="primary"
             variant="contained"
-            onClick={handleSubmit(onConfigureClick)}
+            onClick={handleSubmit(onSubmit)}
           >
             CONFIGURE DRIVER
           </Button>
