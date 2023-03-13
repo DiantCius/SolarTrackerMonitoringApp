@@ -35,8 +35,10 @@ export const ConfigurePowerplant = () => {
       //   {
       //     name: "SOLAR TRACKER DRIVER",
       //     services: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
+
       //   },
       // ],
+      optionalServices: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
       acceptAllDevices: true,
     })
     console.log("requested device")
