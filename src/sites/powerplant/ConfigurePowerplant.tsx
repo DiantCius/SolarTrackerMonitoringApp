@@ -18,7 +18,9 @@ const configurePowerplantValidationSchema = Yup.object().shape({
 })
 
 export const ConfigurePowerplant = () => {
-  const [connected, setConnected] = useState<boolean>(false)
+  const [bleConnected, setBleConnected] = useState<boolean>(false)
+  const [wifiConnection, setWifiConnection] =
+    useState<String>("WIFI_DISCONNECTED")
 
   const {
     register,
@@ -44,8 +46,8 @@ export const ConfigurePowerplant = () => {
     console.log("requested device")
     server = await device.gatt.connect()
 
-    setConnected(true)
-    console.log("connection status:", connected)
+    setBleConnected(true)
+    console.log("connection status:", bleConnected)
 
     service = await server.getPrimaryService(
       "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -77,6 +79,12 @@ export const ConfigurePowerplant = () => {
     console.log("thing:", thing)
     console.log("characteristic", characteristic)
     await characteristic.writeValue(encoder.encode(JSON.stringify(thing)))
+
+    var response = await characteristic.readValue()
+    var decoder = new TextDecoder("utf-8")
+    var wifiConnection = decoder.decode(response)
+    console.log("Wifi connection:", wifiConnection)
+    setWifiConnection(wifiConnection)
   }
 
   const onSubmit = (props: ConfigurePowerplantFormProps) => {
@@ -106,40 +114,46 @@ export const ConfigurePowerplant = () => {
             CONNECT TO BLUETOOTH DEVICE
           </Button>
           <Typography component="h1" variant="h5">
-            Connection status: {connected ? "connected" : "disconnected"}
+            Connection status: {bleConnected ? "connected" : "disconnected"}
           </Typography>
-          <TextField
-            required
-            sx={{ mt: 2, width: "100%" }}
-            id="ssid"
-            label="ssid"
-            type="text"
-            {...register("ssid")}
-            error={errors.ssid ? true : false}
-          />
-          <Typography variant="inherit" color="error">
-            {errors.ssid?.message}
-          </Typography>
-          <TextField
-            required
-            sx={{ mt: 2, width: "100%" }}
-            id="pass"
-            label="pass"
-            type="password"
-            {...register("pass")}
-            error={errors.pass ? true : false}
-          />
-          <Typography variant="inherit" color="error">
-            {errors.pass?.message}
-          </Typography>
-          <Button
-            sx={{ mt: 2, width: "100%" }}
-            color="primary"
-            variant="contained"
-            onClick={handleSubmit(onSubmit)}
-          >
-            CONFIGURE DRIVER
-          </Button>
+          {bleConnected ? (
+            <>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="ssid"
+                label="ssid"
+                type="text"
+                {...register("ssid")}
+                error={errors.ssid ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {errors.ssid?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="pass"
+                label="pass"
+                type="password"
+                {...register("pass")}
+                error={errors.pass ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {errors.pass?.message}
+              </Typography>
+              <Button
+                sx={{ mt: 2, width: "100%" }}
+                color="primary"
+                variant="contained"
+                onClick={handleSubmit(onSubmit)}
+              >
+                CONFIGURE DRIVER
+              </Button>
+            </>
+          ) : (
+            <div></div>
+          )}
         </Box>
       </Container>
     </Layout>
