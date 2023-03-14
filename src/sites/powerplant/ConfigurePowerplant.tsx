@@ -4,6 +4,7 @@ import { Layout } from "../../components/Layout"
 import * as Yup from "yup"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useNavigate } from "react-router-dom"
 
 let characteristic: any, device: any, service: any, server: any
 
@@ -59,6 +60,9 @@ export const ConfigurePowerplant = () => {
   const [bleConnected, setBleConnected] = useState<boolean>(false)
   const [wifiConnection, setWifiConnection] =
     useState<String>("WIFI_DISCONNECTED")
+  const [driverConfigured, setDriverConfigured] = useState<boolean>(false)
+
+  const navigate = useNavigate()
 
   const {
     register: registerWifi,
@@ -123,7 +127,7 @@ export const ConfigurePowerplant = () => {
       ssid: props.ssid,
       pass: props.pass,
     }
-    console.log("thing:", wifiProps)
+    console.log("wifi props:", wifiProps)
     console.log("characteristic", characteristic)
     await characteristic.writeValue(encoder.encode(JSON.stringify(wifiProps)))
 
@@ -134,7 +138,27 @@ export const ConfigurePowerplant = () => {
     setWifiConnection(wifiConnection)
   }
 
-  const configureDriver = async (props: ConfigurePowerplantFormProps) => {}
+  const configureDriver = async (props: ConfigurePowerplantFormProps) => {
+    var encoder = new TextEncoder()
+    var driverProps = {
+      latitude: props.latitude,
+      longitude: props.longitude,
+      elevationStart: props.elevationStart,
+      azimuthStart: props.azimuthStart,
+      minElevation: props.minElevation,
+      maxAzimuth: props.maxAzimuth,
+      windSpeedThreshold: props.windSpeedThreshold,
+    }
+    console.log("driver props:", driverProps)
+    console.log("characteristic", characteristic)
+    await characteristic.writeValue(encoder.encode(JSON.stringify(driverProps)))
+
+    var response = await characteristic.readValue()
+    var decoder = new TextDecoder("utf-8")
+    var configureStatus = decoder.decode(response)
+    setDriverConfigured(true)
+    device.gatt.disconnect()
+  }
 
   const onWifiSubmit = (props: ConfigureWifiFormProps) => {
     console.log("configure props:", props)
@@ -205,7 +229,9 @@ export const ConfigurePowerplant = () => {
           ) : (
             <div></div>
           )}
-          {bleConnected && wifiConnection == "WIFI_CONNECTED" ? (
+          {bleConnected &&
+          !driverConfigured &&
+          wifiConnection == "WIFI_CONNECTED" ? (
             <>
               <Typography component="h1" variant="h5">
                 Configure powerplant parameters
@@ -330,6 +356,18 @@ export const ConfigurePowerplant = () => {
             <Typography variant="inherit" color="error">
               WIFI CONNECTION ERROR
             </Typography>
+          )}
+          {driverConfigured ? (
+            <Button
+              sx={{ mt: 2, width: "100%" }}
+              color="primary"
+              variant="contained"
+              onClick={() => {}}
+            >
+              CONNECT POWERPLANT TO SERVER
+            </Button>
+          ) : (
+            <div></div>
           )}
         </Box>
       </Container>
