@@ -7,12 +7,50 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 let characteristic: any, device: any, service: any, server: any
 
-type ConfigurePowerplantFormProps = {
+type ConfigureWifiFormProps = {
   ssid: string
   pass: string
 }
 
+type ConfigurePowerplantFormProps = {
+  latitude: number
+  longitude: number
+  elevationStart: number
+  azimuthStart: number
+  minElevation: number
+  maxAzimuth: number
+  windSpeedThreshold: number
+}
+
 const configurePowerplantValidationSchema = Yup.object().shape({
+  latitude: Yup.number().min(-90).max(90).required("Coordinates are required"),
+  longitude: Yup.number()
+    .min(-180)
+    .max(180)
+    .required("Coordinates are required"),
+  minElevation: Yup.number()
+    .min(-80)
+    .max(-40)
+    .required("Min elevation angle required"),
+  elevationStart: Yup.number()
+    .min(-80)
+    .max(0)
+    .required("Elevation starting position required"),
+  azimuthStart: Yup.number()
+    .min(50)
+    .max(300)
+    .required("Azimuth starting position required"),
+  maxAzimuth: Yup.number()
+    .min(200)
+    .max(300)
+    .required("Max azimuth angle required"),
+  windSpeedThreshold: Yup.number()
+    .min(15)
+    .max(40)
+    .required("Wind speed threshold required"),
+})
+
+const configureWifiValidationSchema = Yup.object().shape({
   ssid: Yup.string().required("ssid of network is requried"),
   pass: Yup.string().required("pass of network is required"),
 })
@@ -23,9 +61,18 @@ export const ConfigurePowerplant = () => {
     useState<String>("WIFI_DISCONNECTED")
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: registerWifi,
+    handleSubmit: handleSubmitWifi,
+    formState: { errors: wifiErrors },
+  } = useForm<ConfigureWifiFormProps>({
+    resolver: yupResolver(configureWifiValidationSchema),
+    reValidateMode: "onChange",
+  })
+
+  const {
+    register: registerConfig,
+    handleSubmit: handleSubmitConfig,
+    formState: { errors: configErrors },
   } = useForm<ConfigurePowerplantFormProps>({
     resolver: yupResolver(configurePowerplantValidationSchema),
     reValidateMode: "onChange",
@@ -69,16 +116,16 @@ export const ConfigurePowerplant = () => {
     characteristic.writeValue(encoder.encode("gday")) // see if we can get this
   }
 
-  const configureDriver = async (props: ConfigurePowerplantFormProps) => {
+  const configureWifi = async (props: ConfigureWifiFormProps) => {
     console.log("connect wifi...")
     var encoder = new TextEncoder()
-    var thing = {
+    var wifiProps = {
       ssid: props.ssid,
       pass: props.pass,
     }
-    console.log("thing:", thing)
+    console.log("thing:", wifiProps)
     console.log("characteristic", characteristic)
-    await characteristic.writeValue(encoder.encode(JSON.stringify(thing)))
+    await characteristic.writeValue(encoder.encode(JSON.stringify(wifiProps)))
 
     var response = await characteristic.readValue()
     var decoder = new TextDecoder("utf-8")
@@ -87,10 +134,14 @@ export const ConfigurePowerplant = () => {
     setWifiConnection(wifiConnection)
   }
 
-  const onSubmit = (props: ConfigurePowerplantFormProps) => {
+  const configureDriver = async (props: ConfigurePowerplantFormProps) => {}
+
+  const onWifiSubmit = (props: ConfigureWifiFormProps) => {
     console.log("configure props:", props)
-    configureDriver(props)
+    configureWifi(props)
   }
+
+  const onConfigSubmit = (props: ConfigurePowerplantFormProps) => {}
 
   return (
     <Layout>
@@ -103,7 +154,7 @@ export const ConfigurePowerplant = () => {
           minHeight="100vh"
         >
           <Typography component="h1" variant="h5">
-            Configure powerplant
+            Configure powerplant WiFi
           </Typography>
           <Button
             sx={{ mt: 2, width: "100%" }}
@@ -116,7 +167,7 @@ export const ConfigurePowerplant = () => {
           <Typography component="h1" variant="h5">
             Connection status: {bleConnected ? "connected" : "disconnected"}
           </Typography>
-          {bleConnected ? (
+          {bleConnected && wifiConnection != "WIFI_CONNECTED" ? (
             <>
               <TextField
                 required
@@ -124,11 +175,11 @@ export const ConfigurePowerplant = () => {
                 id="ssid"
                 label="ssid"
                 type="text"
-                {...register("ssid")}
-                error={errors.ssid ? true : false}
+                {...registerWifi("ssid")}
+                error={wifiErrors.ssid ? true : false}
               />
               <Typography variant="inherit" color="error">
-                {errors.ssid?.message}
+                {wifiErrors.ssid?.message}
               </Typography>
               <TextField
                 required
@@ -136,23 +187,149 @@ export const ConfigurePowerplant = () => {
                 id="pass"
                 label="pass"
                 type="password"
-                {...register("pass")}
-                error={errors.pass ? true : false}
+                {...registerWifi("pass")}
+                error={wifiErrors.pass ? true : false}
               />
               <Typography variant="inherit" color="error">
-                {errors.pass?.message}
+                {wifiErrors.pass?.message}
               </Typography>
               <Button
                 sx={{ mt: 2, width: "100%" }}
                 color="primary"
                 variant="contained"
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmitWifi(onWifiSubmit)}
               >
-                CONFIGURE DRIVER
+                CONFIGURE WIFI
               </Button>
             </>
           ) : (
             <div></div>
+          )}
+          {bleConnected && wifiConnection == "WIFI_CONNECTED" ? (
+            <>
+              <Typography component="h1" variant="h5">
+                Configure powerplant parameters
+              </Typography>
+              <Box flexDirection={"row"} display="flex" marginTop={2}>
+                <TextField
+                  sx={{ mr: 2 }}
+                  required
+                  id="latitude"
+                  label="latitude"
+                  type="number"
+                  {...registerConfig("latitude")}
+                  error={configErrors.latitude ? true : false}
+                />
+                <TextField
+                  required
+                  id="longitude"
+                  label="longitude"
+                  type="number"
+                  {...registerConfig("longitude")}
+                  error={configErrors.longitude ? true : false}
+                />
+              </Box>
+              <Box flexDirection={"row"} display="flex">
+                <Typography variant="inherit" color="error">
+                  {configErrors.latitude?.message}
+                </Typography>
+                <Typography variant="inherit" color="error">
+                  {configErrors.latitude?.message}
+                </Typography>
+              </Box>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="minElevation"
+                label="minElevation"
+                type="number"
+                defaultValue={-50}
+                inputProps={{
+                  step: 1,
+                }}
+                {...registerConfig("minElevation")}
+                error={configErrors.minElevation ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.minElevation?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="maxAzimuth"
+                label="maxAzimuth"
+                type="number"
+                defaultValue={290}
+                inputProps={{
+                  step: 10,
+                }}
+                {...registerConfig("maxAzimuth")}
+                error={configErrors.maxAzimuth ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.maxAzimuth?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="elevationStart"
+                label="elevationStart"
+                type="number"
+                defaultValue={0}
+                inputProps={{
+                  step: 1,
+                }}
+                {...registerConfig("elevationStart")}
+                error={configErrors.elevationStart ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.elevationStart?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="azimuthStart"
+                label="azimuthStart"
+                type="number"
+                defaultValue={68.81}
+                inputProps={{
+                  step: 0.1,
+                }}
+                {...registerConfig("azimuthStart")}
+                error={configErrors.azimuthStart ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.azimuthStart?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="windSpeedThreshold"
+                label="windSpeedThreshold"
+                type="number"
+                defaultValue={25}
+                inputProps={{
+                  step: 1,
+                }}
+                {...registerConfig("windSpeedThreshold")}
+                error={configErrors.windSpeedThreshold ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.windSpeedThreshold?.message}
+              </Typography>
+              <Button
+                sx={{ mt: 2, width: "100%" }}
+                color="primary"
+                variant="contained"
+                onClick={handleSubmitConfig(onConfigSubmit)}
+              >
+                CONFIGURE WIFI
+              </Button>
+            </>
+          ) : (
+            <Typography variant="inherit" color="error">
+              WIFI CONNECTION ERROR
+            </Typography>
           )}
         </Box>
       </Container>

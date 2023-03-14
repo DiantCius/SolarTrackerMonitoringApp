@@ -68,7 +68,7 @@ export const PowerplantList = () => {
                     ) : (
                       <Button
                         onClick={() => {
-                          navigate(PATHS.powerplantConfigure)
+                          navigate(`/powerplant/configure/${e.powerplantId}`)
                         }}
                       >
                         Configure
