@@ -128,9 +128,7 @@ export const ConfigurePowerplant = () => {
     console.log("Wifi connection:", wifiConn)
     setWifiConnection(wifiConn)
     console.log("Getting configure characteristic")
-    console.log("WIFI CONNECTION:", wifiConnection)
-    console.log("are they equal", wifiConnection == "WIFI_CONNECTED")
-    if (wifiConnection == "WIFI_CONNECTED") {
+    if (wifiConn == "WIFI_CONNECTED") {
       configureCharacteristic = await service.getCharacteristic(
         CONFIGURE_CHARACTERISTIC_UUID
       )
