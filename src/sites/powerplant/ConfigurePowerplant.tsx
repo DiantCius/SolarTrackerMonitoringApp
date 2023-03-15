@@ -156,16 +156,20 @@ export const ConfigurePowerplant = () => {
     var response = await characteristic.readValue()
     var decoder = new TextDecoder("utf-8")
     var configureStatus = decoder.decode(response)
+    console.log("Driver status:", configureStatus)
     setDriverConfigured(true)
     device.gatt.disconnect()
   }
 
   const onWifiSubmit = (props: ConfigureWifiFormProps) => {
-    console.log("configure props:", props)
+    console.log("wifi props:", props)
     configureWifi(props)
   }
 
-  const onConfigSubmit = (props: ConfigurePowerplantFormProps) => {}
+  const onConfigSubmit = (props: ConfigurePowerplantFormProps) => {
+    console.log("configure props:", props)
+    configureDriver(props)
+  }
 
   return (
     <Layout>
