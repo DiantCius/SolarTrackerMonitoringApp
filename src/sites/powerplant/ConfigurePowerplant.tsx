@@ -128,6 +128,8 @@ export const ConfigurePowerplant = () => {
     console.log("Wifi connection:", wifiConn)
     setWifiConnection(wifiConn)
     console.log("Getting configure characteristic")
+    console.log("WIFI CONNECTION:", wifiConnection)
+    console.log("are they equal", wifiConnection == "WIFI_CONNECTED")
     if (wifiConnection == "WIFI_CONNECTED") {
       configureCharacteristic = await service.getCharacteristic(
         CONFIGURE_CHARACTERISTIC_UUID
@@ -182,7 +184,7 @@ export const ConfigurePowerplant = () => {
           minHeight="100vh"
         >
           <Typography component="h1" variant="h5">
-            Configure powerplant WiFi
+            CONFIGURE POWERPLANT
           </Typography>
           <Button
             sx={{ mt: 2, width: "100%" }}
