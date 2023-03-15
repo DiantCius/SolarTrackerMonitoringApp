@@ -92,13 +92,6 @@ export const ConfigurePowerplant = () => {
 
   const connectToDevice = async () => {
     device = await navigator.bluetooth.requestDevice({
-      // filters: [
-      //   {
-      //     name: "SOLAR TRACKER DRIVER",
-      //     services: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
-
-      //   },
-      // ],
       optionalServices: [SERVICE_UUID],
       acceptAllDevices: true,
     })
@@ -114,16 +107,6 @@ export const ConfigurePowerplant = () => {
       WIFI_CHARACTERISTIC_UUID
     )
     console.log("got wifi characteristic")
-
-    // var thing = await characteristic.readValue()
-    // var decoder = new TextDecoder("utf-8")
-    // console.log(decoder.decode(thing))
-
-    // console.log("read char")
-
-    // // TODO : send something to the ESP
-    // var encoder = new TextEncoder()
-    // characteristic.writeValue(encoder.encode("gday")) // see if we can get this
   }
 
   const configureWifi = async (props: ConfigureWifiFormProps) => {
@@ -144,10 +127,12 @@ export const ConfigurePowerplant = () => {
     var wifiConn = decoder.decode(response)
     console.log("Wifi connection:", wifiConn)
     setWifiConnection(wifiConn)
+    console.log("Getting configure characteristic")
     if (wifiConnection == "WIFI_CONNECTED") {
       configureCharacteristic = await service.getCharacteristic(
         CONFIGURE_CHARACTERISTIC_UUID
       )
+      console.log("Configure characteristic:", configureCharacteristic)
     }
   }
 
@@ -246,9 +231,7 @@ export const ConfigurePowerplant = () => {
               </Button>
             </>
           ) : (
-            <Typography component="h1" variant="h5">
-              WIFI ALREADY CONNECTED
-            </Typography>
+            <div></div>
           )}
           {bleConnected && wifiConnection == "WIFI_CONNECTED" ? (
             <>
@@ -368,7 +351,7 @@ export const ConfigurePowerplant = () => {
                 variant="contained"
                 onClick={handleSubmitConfig(onConfigSubmit)}
               >
-                CONFIGURE WIFI
+                CONFIGURE DRIVER
               </Button>
             </>
           ) : (
