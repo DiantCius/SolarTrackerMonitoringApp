@@ -75,7 +75,6 @@ export const ConfigurePowerplant = () => {
   const {
     register: registerWifi,
     handleSubmit: handleSubmitWifi,
-    reset: resetWifiInputs,
     formState: { errors: wifiErrors },
   } = useForm<ConfigureWifiFormProps>({
     resolver: yupResolver(configureWifiValidationSchema),
@@ -85,7 +84,6 @@ export const ConfigurePowerplant = () => {
   const {
     register: registerConfig,
     handleSubmit: handleSubmitConfig,
-    reset: resetConfigInputs,
     formState: { errors: configErrors },
   } = useForm<ConfigurePowerplantFormProps>({
     resolver: yupResolver(configurePowerplantValidationSchema),
@@ -160,19 +158,17 @@ export const ConfigurePowerplant = () => {
     var configureStatus = decoder.decode(response)
     console.log("Driver status:", configureStatus)
     setDriverConfigured(true)
-    device.gatt.disconnect()
+    //device.gatt.disconnect()
   }
 
   const onWifiSubmit = (props: ConfigureWifiFormProps) => {
     console.log("wifi props:", props)
     configureWifi(props)
-    resetWifiInputs()
   }
 
   const onConfigSubmit = (props: ConfigurePowerplantFormProps) => {
     console.log("configure props:", props)
     configureDriver(props)
-    resetConfigInputs()
   }
 
   return (
