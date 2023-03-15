@@ -6,7 +6,15 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useNavigate } from "react-router-dom"
 
-let characteristic: any, device: any, service: any, server: any
+const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+const WIFI_CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+const CONFIGURE_CHARACTERISTIC_UUID = "5dd6ee12-c309-11ed-afa1-0242ac120002"
+
+let wifiCharacteristic: any,
+  configureCharacteristic: any,
+  device: any,
+  service: any,
+  server: any
 
 type ConfigureWifiFormProps = {
   ssid: string
@@ -91,7 +99,7 @@ export const ConfigurePowerplant = () => {
 
       //   },
       // ],
-      optionalServices: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
+      optionalServices: [SERVICE_UUID],
       acceptAllDevices: true,
     })
     console.log("requested device")
@@ -100,24 +108,22 @@ export const ConfigurePowerplant = () => {
     setBleConnected(true)
     console.log("connection status:", bleConnected)
 
-    service = await server.getPrimaryService(
-      "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-    )
+    service = await server.getPrimaryService(SERVICE_UUID)
     console.log("got service")
-    characteristic = await service.getCharacteristic(
-      "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+    wifiCharacteristic = await service.getCharacteristic(
+      WIFI_CHARACTERISTIC_UUID
     )
-    console.log("got char")
+    console.log("got wifi characteristic")
 
-    var thing = await characteristic.readValue()
-    var decoder = new TextDecoder("utf-8")
-    console.log(decoder.decode(thing))
+    // var thing = await characteristic.readValue()
+    // var decoder = new TextDecoder("utf-8")
+    // console.log(decoder.decode(thing))
 
-    console.log("read char")
+    // console.log("read char")
 
-    // TODO : send something to the ESP
-    var encoder = new TextEncoder()
-    characteristic.writeValue(encoder.encode("gday")) // see if we can get this
+    // // TODO : send something to the ESP
+    // var encoder = new TextEncoder()
+    // characteristic.writeValue(encoder.encode("gday")) // see if we can get this
   }
 
   const configureWifi = async (props: ConfigureWifiFormProps) => {
@@ -128,14 +134,21 @@ export const ConfigurePowerplant = () => {
       pass: props.pass,
     }
     console.log("wifi props:", wifiProps)
-    console.log("characteristic", characteristic)
-    await characteristic.writeValue(encoder.encode(JSON.stringify(wifiProps)))
+    console.log("characteristic", wifiCharacteristic)
+    await wifiCharacteristic.writeValue(
+      encoder.encode(JSON.stringify(wifiProps))
+    )
 
-    var response = await characteristic.readValue()
+    var response = await wifiCharacteristic.readValue()
     var decoder = new TextDecoder("utf-8")
-    var wifiConnection = decoder.decode(response)
-    console.log("Wifi connection:", wifiConnection)
-    setWifiConnection(wifiConnection)
+    var wifiConn = decoder.decode(response)
+    console.log("Wifi connection:", wifiConn)
+    setWifiConnection(wifiConn)
+    if (wifiConnection == "WIFI_CONNECTED") {
+      configureCharacteristic = await service.getCharacteristic(
+        CONFIGURE_CHARACTERISTIC_UUID
+      )
+    }
   }
 
   const configureDriver = async (props: ConfigurePowerplantFormProps) => {
@@ -150,10 +163,12 @@ export const ConfigurePowerplant = () => {
       windSpeedThreshold: props.windSpeedThreshold,
     }
     console.log("driver props:", driverProps)
-    console.log("characteristic", characteristic)
-    await characteristic.writeValue(encoder.encode(JSON.stringify(driverProps)))
+    console.log("characteristic", configureCharacteristic)
+    await configureCharacteristic.writeValue(
+      encoder.encode(JSON.stringify(driverProps))
+    )
 
-    var response = await characteristic.readValue()
+    var response = await configureCharacteristic.readValue()
     var decoder = new TextDecoder("utf-8")
     var configureStatus = decoder.decode(response)
     console.log("Driver status:", configureStatus)
@@ -231,11 +246,11 @@ export const ConfigurePowerplant = () => {
               </Button>
             </>
           ) : (
-            <div></div>
+            <Typography component="h1" variant="h5">
+              WIFI ALREADY CONNECTED
+            </Typography>
           )}
-          {bleConnected &&
-          !driverConfigured &&
-          wifiConnection == "WIFI_CONNECTED" ? (
+          {bleConnected && wifiConnection == "WIFI_CONNECTED" ? (
             <>
               <Typography component="h1" variant="h5">
                 Configure powerplant parameters
@@ -357,9 +372,7 @@ export const ConfigurePowerplant = () => {
               </Button>
             </>
           ) : (
-            <Typography variant="inherit" color="error">
-              WIFI CONNECTION ERROR
-            </Typography>
+            <div></div>
           )}
           {driverConfigured ? (
             <Button
