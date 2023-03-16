@@ -70,33 +70,6 @@ export const CreatePowerplant = () => {
       },
     }
   )
-
-  const connectToDevice = async () => {
-    navigator.bluetooth
-      .requestDevice({
-        acceptAllDevices: true,
-      })
-      .then((device) => {
-        console.log(`Name: ${device.name}`)
-      })
-      .catch((error) => {
-        console.log("error", error)
-      })
-
-    navigator.bluetooth
-      .requestDevice({
-        acceptAllDevices: true,
-      })
-      .then((device) => {
-        console.log("> Name:             " + device.name)
-        console.log("> Id:               " + device.id)
-        console.log("> Connected:        " + device.gatt?.connected)
-      })
-      .catch((error) => {
-        console.log("Argh! " + error)
-      })
-  }
-
   const onSubmit = (props: CreatePowerplantFormProps) => {
     mutate(props)
   }
@@ -216,14 +189,6 @@ export const CreatePowerplant = () => {
           <Typography variant="inherit" color="error">
             {isError && errors !== null ? error.response.data.error : ""}
           </Typography>
-          <Button
-            sx={{ mt: 2, width: "100%" }}
-            color="primary"
-            variant="contained"
-            onClick={connectToDevice}
-          >
-            BLUETOOTH
-          </Button>
         </Box>
       </Container>
     </Layout>

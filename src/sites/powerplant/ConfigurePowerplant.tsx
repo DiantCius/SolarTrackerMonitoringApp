@@ -4,7 +4,10 @@ import { Layout } from "../../components/Layout"
 import * as Yup from "yup"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { Powerplant } from "../../models/api-models"
+import axios from "../../api/axios"
 
 const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 const WIFI_CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -72,6 +75,8 @@ export const ConfigurePowerplant = () => {
 
   const navigate = useNavigate()
 
+  const { id } = useParams()
+
   const {
     register: registerWifi,
     handleSubmit: handleSubmitWifi,
@@ -89,6 +94,20 @@ export const ConfigurePowerplant = () => {
     resolver: yupResolver(configurePowerplantValidationSchema),
     reValidateMode: "onChange",
   })
+
+  const { data, refetch } = useQuery<any, any, Powerplant>(
+    [`/Powerplant/${id}`],
+    async () => {
+      const res = await axios.get(`/Powerplant/${id}`)
+      return res.data
+    },
+    {
+      onSuccess: async (response) => {},
+      onError: (error) => {
+        console.log("error getting powerplant: ", error)
+      },
+    }
+  )
 
   const connectToDevice = async () => {
     device = await navigator.bluetooth.requestDevice({
@@ -181,6 +200,10 @@ export const ConfigurePowerplant = () => {
           alignItems="center"
           minHeight="100vh"
         >
+          <Typography>
+            Powerplant server connection status:{" "}
+            {data?.connectionStatus == 1 ? "connected" : "disconnected"}
+          </Typography>
           <Typography component="h1" variant="h5">
             CONFIGURE POWERPLANT
           </Typography>
@@ -192,8 +215,9 @@ export const ConfigurePowerplant = () => {
           >
             CONNECT TO BLUETOOTH DEVICE
           </Button>
-          <Typography component="h1" variant="h5">
-            Connection status: {bleConnected ? "connected" : "disconnected"}
+          <Typography>
+            Bluetooth connection status:{" "}
+            {bleConnected ? "connected" : "disconnected"}
           </Typography>
           {bleConnected ? (
             <>

@@ -9,7 +9,9 @@ export interface RegisterResponse {
 export interface Powerplant {
   powerplantId: number
   name: string
-  location: string
+  longitude: number
+  latitude: number
+  tariff: string
   powerplantType: number
   serialNumber: string
   connectionStatus: number

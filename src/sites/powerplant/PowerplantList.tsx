@@ -18,7 +18,7 @@ export const PowerplantList = () => {
   const navigate = useNavigate()
 
   const { data, refetch } = useQuery<any, any, GetAllPowerplantsResponse>(
-    ["/powerplant/all"],
+    ["/Powerplant/all"],
     async () => {
       const res = await axios.get("Powerplant/all")
       return res.data
@@ -76,7 +76,7 @@ export const PowerplantList = () => {
                     )
                   }
                 >
-                  <ListItemText primary={e.name} secondary={e.location} />
+                  <ListItemText primary={e.name} secondary={e.latitude} />
                 </ListItem>
               ))}
           </List>
