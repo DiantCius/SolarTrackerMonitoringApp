@@ -122,10 +122,13 @@ export const ConfigurePowerplant = () => {
 
     service = await server.getPrimaryService(SERVICE_UUID)
     console.log("got service")
-    wifiCharacteristic = await service.getCharacteristic(
-      WIFI_CHARACTERISTIC_UUID
+    // wifiCharacteristic = await service.getCharacteristic(
+    //   WIFI_CHARACTERISTIC_UUID
+    // )
+    configureCharacteristic = await service.getCharacteristic(
+      CONFIGURE_CHARACTERISTIC_UUID
     )
-    console.log("got wifi characteristic")
+    console.log("got configure characteristic")
   }
 
   const configureWifi = async (props: ConfigureWifiFormProps) => {
@@ -146,13 +149,13 @@ export const ConfigurePowerplant = () => {
     var wifiConn = decoder.decode(response)
     console.log("Wifi connection:", wifiConn)
     setWifiConnection(wifiConn)
-    console.log("Getting configure characteristic")
-    if (wifiConn == "WIFI_CONNECTED") {
-      configureCharacteristic = await service.getCharacteristic(
-        CONFIGURE_CHARACTERISTIC_UUID
-      )
-      console.log("Configure characteristic:", configureCharacteristic)
-    }
+    // console.log("Getting configure characteristic")
+    // if (wifiConn == "WIFI_CONNECTED") {
+    //   configureCharacteristic = await service.getCharacteristic(
+    //     CONFIGURE_CHARACTERISTIC_UUID
+    //   )
+    //   console.log("Configure characteristic:", configureCharacteristic)
+    // }
   }
 
   const configureDriver = async (props: ConfigurePowerplantFormProps) => {
@@ -177,6 +180,11 @@ export const ConfigurePowerplant = () => {
     var configureStatus = decoder.decode(response)
     console.log("Driver status:", configureStatus)
     setDriverConfigured(true)
+    if (configureStatus == "DRIVER_CONFIGURED") {
+      wifiCharacteristic = await service.getCharacteristic(
+        WIFI_CHARACTERISTIC_UUID
+      )
+    }
     //device.gatt.disconnect()
   }
 
