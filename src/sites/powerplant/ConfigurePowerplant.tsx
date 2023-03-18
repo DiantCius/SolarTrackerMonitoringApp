@@ -179,8 +179,8 @@ export const ConfigurePowerplant = () => {
     var decoder = new TextDecoder("utf-8")
     var configureStatus = decoder.decode(response)
     console.log("Driver status:", configureStatus)
-    setDriverConfigured(true)
     if (configureStatus == "DRIVER_CONFIGURED") {
+      setDriverConfigured(true)
       wifiCharacteristic = await service.getCharacteristic(
         WIFI_CHARACTERISTIC_UUID
       )
