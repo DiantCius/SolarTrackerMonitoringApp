@@ -106,6 +106,7 @@ export const ConfigurePowerplant = () => {
       onError: (error) => {
         console.log("error getting powerplant: ", error)
       },
+      refetchInterval: 5000,
     }
   )
 
