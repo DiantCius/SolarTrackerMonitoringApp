@@ -221,44 +221,6 @@ export const ConfigurePowerplant = () => {
           </Typography>
           {bleConnected ? (
             <>
-              <TextField
-                required
-                sx={{ mt: 2, width: "100%" }}
-                id="ssid"
-                label="ssid"
-                type="text"
-                {...registerWifi("ssid")}
-                error={wifiErrors.ssid ? true : false}
-              />
-              <Typography variant="inherit" color="error">
-                {wifiErrors.ssid?.message}
-              </Typography>
-              <TextField
-                required
-                sx={{ mt: 2, width: "100%" }}
-                id="pass"
-                label="pass"
-                type="password"
-                {...registerWifi("pass")}
-                error={wifiErrors.pass ? true : false}
-              />
-              <Typography variant="inherit" color="error">
-                {wifiErrors.pass?.message}
-              </Typography>
-              <Button
-                sx={{ mt: 2, width: "100%" }}
-                color="primary"
-                variant="contained"
-                onClick={handleSubmitWifi(onWifiSubmit)}
-              >
-                CONFIGURE WIFI
-              </Button>
-            </>
-          ) : (
-            <div></div>
-          )}
-          {bleConnected && wifiConnection == "WIFI_CONNECTED" ? (
-            <>
               <Typography component="h1" variant="h5">
                 Configure powerplant parameters
               </Typography>
@@ -381,14 +343,54 @@ export const ConfigurePowerplant = () => {
           ) : (
             <div></div>
           )}
-          {driverConfigured ? (
+          {bleConnected && driverConfigured ? (
+            <>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="ssid"
+                label="ssid"
+                type="text"
+                {...registerWifi("ssid")}
+                error={wifiErrors.ssid ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {wifiErrors.ssid?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="pass"
+                label="pass"
+                type="password"
+                {...registerWifi("pass")}
+                error={wifiErrors.pass ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {wifiErrors.pass?.message}
+              </Typography>
+              <Button
+                sx={{ mt: 2, width: "100%" }}
+                color="primary"
+                variant="contained"
+                onClick={handleSubmitWifi(onWifiSubmit)}
+              >
+                CONFIGURE WIFI
+              </Button>
+            </>
+          ) : (
+            <div></div>
+          )}
+          {wifiConnection == "WIFI_CONNECTED" &&
+          driverConfigured &&
+          data?.connectionStatus == 1 ? (
             <Button
               sx={{ mt: 2, width: "100%" }}
               color="primary"
               variant="contained"
               onClick={() => {}}
             >
-              CONNECT POWERPLANT TO SERVER
+              FINISH CONFIGURATION
             </Button>
           ) : (
             <div></div>
