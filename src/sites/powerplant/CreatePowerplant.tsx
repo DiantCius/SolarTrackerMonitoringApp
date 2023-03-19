@@ -21,7 +21,7 @@ type CreatePowerplantFormProps = {
   name: string
   serialNumber: string
   city: string
-  tariff: number
+  tariff: string
   powerplantType: number
 }
 
@@ -34,7 +34,7 @@ const createPowerplantValidationSchema = Yup.object().shape({
     .max(4, "Serial number must be 4 digits"),
   powerplantType: Yup.number().required("Type is required"),
   city: Yup.string().required("City is required"),
-  tariff: Yup.number().required("Tariff is required"),
+  tariff: Yup.string().required("Tariff is required"),
 })
 
 export const CreatePowerplant = () => {
