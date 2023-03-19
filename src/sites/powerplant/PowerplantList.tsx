@@ -76,7 +76,7 @@ export const PowerplantList = () => {
                     )
                   }
                 >
-                  <ListItemText primary={e.name} secondary={e.latitude} />
+                  <ListItemText primary={e.name} secondary={e.tariff} />
                 </ListItem>
               ))}
           </List>
