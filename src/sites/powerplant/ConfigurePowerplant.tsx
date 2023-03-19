@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Powerplant } from "../../models/api-models"
 import axios from "../../api/axios"
+import { PATHS } from "../../navigation/paths"
 
 const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 const WIFI_CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -197,6 +198,10 @@ export const ConfigurePowerplant = () => {
   const onConfigSubmit = (props: ConfigurePowerplantFormProps) => {
     console.log("configure props:", props)
     configureDriver(props)
+  }
+
+  const onFinishSubmit = () => {
+    navigate(PATHS.powerplantList)
   }
 
   return (
@@ -397,7 +402,7 @@ export const ConfigurePowerplant = () => {
               sx={{ mt: 2, width: "100%" }}
               color="primary"
               variant="contained"
-              onClick={() => {}}
+              onClick={onFinishSubmit}
             >
               FINISH CONFIGURATION
             </Button>
