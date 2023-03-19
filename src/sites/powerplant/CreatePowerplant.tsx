@@ -20,8 +20,6 @@ import { useState } from "react"
 type CreatePowerplantFormProps = {
   name: string
   serialNumber: string
-  latitude: number
-  longitude: number
   city: string
   tariff: number
   powerplantType: number
@@ -37,11 +35,6 @@ const createPowerplantValidationSchema = Yup.object().shape({
   powerplantType: Yup.number().required("Type is required"),
   city: Yup.string().required("City is required"),
   tariff: Yup.number().required("Tariff is required"),
-  latitude: Yup.number().min(-90).max(90).required("Coordinates are required"),
-  longitude: Yup.number()
-    .min(-180)
-    .max(180)
-    .required("Coordinates are required"),
 })
 
 export const CreatePowerplant = () => {
@@ -123,33 +116,6 @@ export const CreatePowerplant = () => {
           <Typography variant="inherit" color="error">
             {errors.city?.message}
           </Typography>
-          <Box flexDirection={"row"} display="flex" marginTop={2}>
-            <TextField
-              sx={{ mr: 2 }}
-              required
-              id="latitude"
-              label="latitude"
-              type="number"
-              {...register("latitude")}
-              error={errors.latitude ? true : false}
-            />
-            <TextField
-              required
-              id="longitude"
-              label="longitude"
-              type="number"
-              {...register("longitude")}
-              error={errors.longitude ? true : false}
-            />
-          </Box>
-          <Box flexDirection={"row"} display="flex">
-            <Typography variant="inherit" color="error">
-              {errors.latitude?.message}
-            </Typography>
-            <Typography variant="inherit" color="error">
-              {errors.latitude?.message}
-            </Typography>
-          </Box>
           <TextField
             required
             sx={{ mt: 2, width: "100%" }}
