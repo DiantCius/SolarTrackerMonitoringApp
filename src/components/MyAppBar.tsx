@@ -80,7 +80,7 @@ export const MyAppBar = () => {
               textDecoration: "none",
             }}
           >
-            SOLAR MISIO
+            TITLE
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -165,7 +165,7 @@ export const MyAppBar = () => {
               textDecoration: "none",
             }}
           >
-            SOLAR MISIO
+            TITLE
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {isLoggedIn

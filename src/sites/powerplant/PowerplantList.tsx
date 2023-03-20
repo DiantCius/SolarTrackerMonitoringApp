@@ -62,12 +62,16 @@ export const PowerplantList = () => {
                 <ListItem
                   key={e.powerplantId}
                   divider
+                  onClick={() => {
+                    navigate(`/powerplant/details/${e.serialNumber}`)
+                  }}
                   secondaryAction={
                     e.connectionStatus == 1 ? (
                       <Typography>Online</Typography>
                     ) : (
                       <Button
-                        onClick={() => {
+                        onClick={(event) => {
+                          event.stopPropagation()
                           navigate(`/powerplant/configure/${e.powerplantId}`)
                         }}
                       >

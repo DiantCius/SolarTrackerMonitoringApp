@@ -6,4 +6,5 @@ export const PATHS = {
   powerplantCreate: "/powerplant/create",
   powerplantList: "/powerplant/all",
   powerplantConfigure: "/powerplant/configure/:id",
+  powerplantDetails: "/powerplant/details/:serialNumber",
 }

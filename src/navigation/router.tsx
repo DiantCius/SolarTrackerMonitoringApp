@@ -5,6 +5,7 @@ import { Register } from "../sites/auth/Register"
 import { Home } from "../sites/Home"
 import { ConfigurePowerplant } from "../sites/powerplant/ConfigurePowerplant"
 import { CreatePowerplant } from "../sites/powerplant/CreatePowerplant"
+import { PowerplantDetails } from "../sites/powerplant/PowerplantDetails"
 import { PowerplantList } from "../sites/powerplant/PowerplantList"
 import { Profile } from "../sites/Profile"
 import { PATHS } from "./paths"
@@ -22,6 +23,7 @@ export const AppRouter = () => {
         path={PATHS.powerplantConfigure}
         element={<ConfigurePowerplant />}
       />
+      <Route path={PATHS.powerplantDetails} element={<PowerplantDetails />} />
     </Routes>
   )
 }

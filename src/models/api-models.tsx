@@ -20,3 +20,15 @@ export interface Powerplant {
 export interface GetAllPowerplantsResponse {
   powerplants: Powerplant[]
 }
+
+export interface EnergyProduction {
+  energyProductionId: number
+  currentProduction: string
+  dailyProduction: string
+  currentTime: string
+  serialNumber: string
+}
+
+export interface GetEnergyProductionsResponse {
+  energyProductions: EnergyProduction[]
+}
