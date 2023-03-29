@@ -63,7 +63,9 @@ export const PowerplantList = () => {
                   key={e.powerplantId}
                   divider
                   onClick={() => {
-                    navigate(`/powerplant/details/${e.serialNumber}`)
+                    if (e.connectionStatus == 1) {
+                      navigate(`/powerplant/details/${e.serialNumber}`)
+                    }
                   }}
                   secondaryAction={
                     e.connectionStatus == 1 ? (

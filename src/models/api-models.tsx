@@ -32,3 +32,11 @@ export interface EnergyProduction {
 export interface GetEnergyProductionsResponse {
   energyProductions: EnergyProduction[]
 }
+
+export interface GetIndicationResponse {
+  serialNumber: string
+  azimuth: number
+  elevation: number
+  windSpeed: number
+  state: number[]
+}
