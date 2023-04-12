@@ -1,9 +1,10 @@
-import { Container, Grid, List, ListItem, Typography } from "@mui/material"
+import { Box, Container, Grid, List, ListItem, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { Layout } from "../../components/Layout"
 import axios from "../../api/axios"
 import { useParams } from "react-router-dom"
 import {
+  EnergyProduction,
   GetEnergyProductionsResponse,
   GetIndicationResponse,
 } from "../../models/api-models"
@@ -39,7 +40,7 @@ export const PowerplantDetails = () => {
     any,
     GetIndicationResponse
   >(
-    [`/Indications/read?serialNumber=${serialNumber}`],
+    ["/Indications/read"],
     async () => {
       const res = await axios.get(
         `/Indications/read?serialNumber=${serialNumber}`
@@ -58,7 +59,7 @@ export const PowerplantDetails = () => {
   )
 
   const { data, refetch } = useQuery<any, any, GetEnergyProductionsResponse>(
-    [`/EnergyProduction/today/${serialNumber}`],
+    ["/EnergyProduction/today"],
     async () => {
       const res = await axios.get(
         `/EnergyProduction/today?serialNumber=${serialNumber}`
@@ -73,8 +74,27 @@ export const PowerplantDetails = () => {
     }
   )
 
+  const { data: currentProduction, refetch: refetchCurrentProduction } =
+    useQuery<any, any, EnergyProduction>(
+      ["/EnergyProduction/today/last"],
+      async () => {
+        const res = await axios.get(
+          `/EnergyProduction/today/last?serialNumber=${serialNumber}`
+        )
+        return res.data
+      },
+      {
+        onSuccess: async (response) => {},
+        onError: (error) => {
+          console.log("error getting energy production data: ", error)
+        },
+        refetchInterval: 30000,
+      }
+    )
+
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         min: 0,
@@ -88,7 +108,7 @@ export const PowerplantDetails = () => {
       },
       title: {
         display: true,
-        text: "Chart.js Line Chart",
+        text: "Daily energy production",
       },
     },
   }
@@ -101,7 +121,7 @@ export const PowerplantDetails = () => {
     datasets: [
       {
         fill: true,
-        label: "Dataset 2",
+        label: "DAILY ENERGY",
         data: data?.energyProductions.map((e) => e.currentProduction),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
@@ -111,31 +131,42 @@ export const PowerplantDetails = () => {
 
   return (
     <Layout>
-      <Container maxWidth="xs">
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            {indicationData?.azimuth}
-          </Grid>
-          <Grid item xs={6}>
-            {indicationData?.elevation}
-          </Grid>
-          <Grid item xs={6}>
-            {indicationData?.windSpeed}
-          </Grid>
-          <Grid item xs={6}>
-            state {indicationData?.state}
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          <Typography pr={1}> Azimuth: {indicationData?.azimuth}° </Typography>
+          <Typography pr={1}>
+            Elevation: {indicationData?.elevation}°
+          </Typography>
+          <Typography pr={1}>
+            Wind speed: {indicationData?.windSpeed}
+          </Typography>
+          <Typography pr={1}>State: {indicationData?.state} </Typography>
+          <Typography pr={1}>
+            Today: {currentProduction?.dailyProduction} kWh
+          </Typography>
+          <Typography pr={1}>
+            Now: {currentProduction?.currentProduction} W
+          </Typography>
+        </Box>
+        <Grid container>
+          <Grid item xl={6} md={6} sm={12} xs={12}>
+            <Line options={options} data={chartData} />
           </Grid>
         </Grid>
-        Energy productions
-        <Line options={options} data={chartData} />
-        <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+
+        {/* <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {data &&
             data.energyProductions.map((ep) => (
               <ListItem key={ep.energyProductionId} divider>
                 <Typography>{ep.currentProduction}</Typography>
               </ListItem>
             ))}
-        </List>
+        </List> */}
       </Container>
     </Layout>
   )
