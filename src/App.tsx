@@ -6,6 +6,8 @@ import { AppRouter } from "./navigation/router"
 import { BrowserRouter } from "react-router-dom"
 import { UserContextProvider } from "./contexts/UserContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 function App() {
   const [mode, setMode] = React.useState<"light" | "dark">("light")
@@ -36,7 +38,9 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <UserContextProvider>
-              <AppRouter />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <AppRouter />
+              </LocalizationProvider>
             </UserContextProvider>
           </BrowserRouter>
         </QueryClientProvider>

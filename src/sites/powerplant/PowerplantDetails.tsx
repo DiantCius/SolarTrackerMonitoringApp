@@ -1,4 +1,4 @@
-import { Box, Container, Grid, List, ListItem, Typography } from "@mui/material"
+import { Box, Container, Grid, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { Layout } from "../../components/Layout"
 import axios from "../../api/axios"
@@ -20,6 +20,11 @@ import {
   Legend,
 } from "chart.js"
 import { Line } from "react-chartjs-2"
+import { DatePicker } from "@mui/x-date-pickers"
+import dayjs, { Dayjs } from "dayjs"
+import { useState } from "react"
+import { MonthlyProductionChart } from "./components/MonthlyProductionsChart"
+import { DailyProductionsChart } from "./components/DailyProductionsChart"
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +38,11 @@ ChartJS.register(
 )
 
 export const PowerplantDetails = () => {
+  const gridItemHeight = "40vh"
+
+  const [dailyDate, setDailyDate] = useState<Dayjs | null>(dayjs())
+  const [monthlyDate, setMonthlyDate] = useState<Dayjs | null>(dayjs())
+
   const { serialNumber } = useParams()
 
   const { data: indicationData, refetch: refetchIndication } = useQuery<
@@ -59,7 +69,7 @@ export const PowerplantDetails = () => {
   )
 
   const { data, refetch } = useQuery<any, any, GetEnergyProductionsResponse>(
-    ["/EnergyProduction/today"],
+    ["/EnergyProduction/today", serialNumber],
     async () => {
       const res = await axios.get(
         `/EnergyProduction/today?serialNumber=${serialNumber}`
@@ -102,26 +112,20 @@ export const PowerplantDetails = () => {
       },
       x: {},
     },
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Daily energy production",
-      },
-    },
   }
 
   const chartData = {
     labels: data?.energyProductions
       .filter((v) => v.currentProduction !== undefined)
-      .map((e) => e.currentTime.substring(11, 19)),
+      .map((e) => {
+        const date = new Date(e.currentTime)
+        return date.getHours() + ":" + date.getMinutes()
+      }),
 
     datasets: [
       {
         fill: true,
-        label: "DAILY ENERGY",
+        label: "Energy W",
         data: data?.energyProductions.map((e) => e.currentProduction),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
@@ -129,37 +133,86 @@ export const PowerplantDetails = () => {
     ],
   }
 
+  console.log("daily", dailyDate?.month())
+
   return (
     <Layout>
       <Container maxWidth="xl">
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-          }}
-        >
-          <Typography pr={1}> Azimuth: {indicationData?.azimuth}° </Typography>
-          <Typography pr={1}>
-            Elevation: {indicationData?.elevation}°
-          </Typography>
-          <Typography pr={1}>
-            Wind speed: {indicationData?.windSpeed}
-          </Typography>
-          <Typography pr={1}>State: {indicationData?.state} </Typography>
-          <Typography pr={1}>
-            Today: {currentProduction?.dailyProduction} kWh
-          </Typography>
-          <Typography pr={1}>
-            Now: {currentProduction?.currentProduction} W
-          </Typography>
-        </Box>
-        <Grid container>
-          <Grid item xl={6} md={6} sm={12} xs={12}>
-            <Line options={options} data={chartData} />
+        <Box flexDirection={"column"} display="flex" minHeight="100vh">
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <Typography pr={1}>Azimuth: {indicationData?.azimuth}°</Typography>
+            <Typography pr={1}>
+              Elevation: {indicationData?.elevation}°
+            </Typography>
+            <Typography pr={1}>
+              Wind speed: {indicationData?.windSpeed}
+            </Typography>
+            <Typography pr={1}>State: {indicationData?.state} </Typography>
+            <Typography pr={1}>
+              Today: {currentProduction?.dailyProduction} kWh
+            </Typography>
+            <Typography pr={1}>
+              Now: {currentProduction?.currentProduction} W
+            </Typography>
+          </Box>
+          <Grid container>
+            <Grid
+              item
+              style={{ height: gridItemHeight }}
+              xl={6}
+              md={6}
+              sm={12}
+              xs={12}
+            >
+              <Line options={options} data={chartData} />
+            </Grid>
+            <Grid
+              item
+              style={{ height: gridItemHeight }}
+              xl={6}
+              md={6}
+              sm={12}
+              xs={12}
+            >
+              <DailyProductionsChart
+                serialNumber={serialNumber!}
+                day={dailyDate?.date()!}
+                month={dailyDate?.month()! + 1}
+                year={dailyDate?.year()!}
+              />
+              <DatePicker
+                value={dailyDate}
+                onChange={(newValue) => setDailyDate(newValue)}
+              />
+            </Grid>
+            <Grid
+              item
+              style={{ height: gridItemHeight }}
+              xl={6}
+              md={6}
+              sm={12}
+              xs={12}
+            >
+              <MonthlyProductionChart
+                serialNumber={serialNumber!}
+                month={monthlyDate?.month()! + 1}
+                year={monthlyDate?.year()!}
+              />
+              <DatePicker
+                views={["year", "month"]}
+                value={monthlyDate}
+                onChange={(newValue) => setMonthlyDate(newValue)}
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        {/* <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+          {/* <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {data &&
             data.energyProductions.map((ep) => (
               <ListItem key={ep.energyProductionId} divider>
@@ -167,6 +220,7 @@ export const PowerplantDetails = () => {
               </ListItem>
             ))}
         </List> */}
+        </Box>
       </Container>
     </Layout>
   )
