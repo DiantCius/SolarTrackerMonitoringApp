@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { GetEnergyProductionsResponse } from "../../../models/api-models"
+import { GetYearlyProductionsResponse } from "../../../models/api-models"
 import axios from "../../../api/axios"
 import {
   Chart as ChartJS,
@@ -12,28 +12,26 @@ import {
 } from "chart.js"
 import { Bar } from "react-chartjs-2"
 
-interface MonthlyProductionChartProps {
+interface YearlyProductionChartProps {
   serialNumber: string
-  month: number
   year: number
 }
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export const MonthlyProductionChart = ({
+export const YearlyProductionChart = ({
   serialNumber,
-  month,
   year,
-}: MonthlyProductionChartProps) => {
-  const { data: monthlyProduction } = useQuery<
+}: YearlyProductionChartProps) => {
+  const { data: yearlyProduction } = useQuery<
     any,
     any,
-    GetEnergyProductionsResponse
+    GetYearlyProductionsResponse
   >(
-    ["/EnergyProduction/month/daily", serialNumber, month, year],
+    ["/EnergyProduction/year/monthly", serialNumber, year],
     async () => {
       const res = await axios.get(
-        `/EnergyProduction/month/daily?serialNumber=${serialNumber}&month=${month}&year=${year}`
+        `/EnergyProduction/year/monthly?serialNumber=${serialNumber}&year=${year}`
       )
       return res.data
     },
@@ -45,29 +43,23 @@ export const MonthlyProductionChart = ({
     }
   )
 
+  const labels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
   }
 
-  const numDays = new Date(year, month, 0).getDate()
-
-  const labels = Array.from({ length: numDays }, (_, index) => index + 1)
-
-  const productions = monthlyProduction?.energyProductions.filter(
-    (v) => v !== undefined
-  )
-
-  const values: string[] = []
+  const values: number[] = []
 
   labels.forEach((element, index) => {
-    const item = productions?.find((e) => {
-      return new Date(e.currentTime).getDate() === index + 1
+    const item = yearlyProduction?.monthlyProductions.find((e) => {
+      return e.month === index + 1
     })
     if (item !== undefined) {
-      values[index] = item.dailyProduction
+      values[index] = item.production
     } else {
-      values[index] = "0"
+      values[index] = 0
     }
   })
 

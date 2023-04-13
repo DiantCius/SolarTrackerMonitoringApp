@@ -40,3 +40,14 @@ export interface GetIndicationResponse {
   windSpeed: number
   state: number[]
 }
+
+export interface MonthlyProduction {
+  month: number
+  year: number
+  production: number
+}
+
+export interface GetYearlyProductionsResponse {
+  serialNumber: string
+  monthlyProductions: MonthlyProduction[]
+}

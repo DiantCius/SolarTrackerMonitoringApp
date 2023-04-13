@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Typography } from "@mui/material"
+import { Box, Container, Grid, Typography, makeStyles } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { Layout } from "../../components/Layout"
 import axios from "../../api/axios"
@@ -25,6 +25,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { useState } from "react"
 import { MonthlyProductionChart } from "./components/MonthlyProductionsChart"
 import { DailyProductionsChart } from "./components/DailyProductionsChart"
+import { YearlyProductionChart } from "./components/YearlyProductionsChart"
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +43,7 @@ export const PowerplantDetails = () => {
 
   const [dailyDate, setDailyDate] = useState<Dayjs | null>(dayjs())
   const [monthlyDate, setMonthlyDate] = useState<Dayjs | null>(dayjs())
+  const [yearlyDate, setYearlyDate] = useState<Dayjs | null>(dayjs())
 
   const { serialNumber } = useParams()
 
@@ -161,7 +163,7 @@ export const PowerplantDetails = () => {
               Now: {currentProduction?.currentProduction} W
             </Typography>
           </Box>
-          <Grid container>
+          <Grid container rowSpacing={4} columnSpacing={2}>
             <Grid
               item
               style={{ height: gridItemHeight }}
@@ -187,6 +189,7 @@ export const PowerplantDetails = () => {
                 year={dailyDate?.year()!}
               />
               <DatePicker
+                sx={{ width: 175 }}
                 value={dailyDate}
                 onChange={(newValue) => setDailyDate(newValue)}
               />
@@ -205,9 +208,29 @@ export const PowerplantDetails = () => {
                 year={monthlyDate?.year()!}
               />
               <DatePicker
+                sx={{ width: 175 }}
                 views={["year", "month"]}
                 value={monthlyDate}
                 onChange={(newValue) => setMonthlyDate(newValue)}
+              />
+            </Grid>
+            <Grid
+              item
+              style={{ height: gridItemHeight }}
+              xl={6}
+              md={6}
+              sm={12}
+              xs={12}
+            >
+              <YearlyProductionChart
+                serialNumber={serialNumber!}
+                year={yearlyDate?.year()!}
+              />
+              <DatePicker
+                sx={{ width: 175 }}
+                views={["year"]}
+                value={yearlyDate}
+                onChange={(newValue) => setYearlyDate(newValue)}
               />
             </Grid>
           </Grid>
