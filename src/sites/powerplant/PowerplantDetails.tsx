@@ -197,6 +197,12 @@ export const PowerplantDetails = () => {
               Elevation: {indicationData?.elevation}°
             </Typography>
             <Typography pr={1}>
+              Solar Azimuth: {indicationData?.solarAzimuth}°
+            </Typography>
+            <Typography pr={1}>
+              Solar Elevation: {indicationData?.solarElevation}°
+            </Typography>
+            <Typography pr={1}>
               Wind speed: {indicationData?.windSpeed}
             </Typography>
             <Typography pr={1}>State: {indicationData?.state} </Typography>

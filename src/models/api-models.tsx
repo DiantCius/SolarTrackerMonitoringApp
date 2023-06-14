@@ -37,6 +37,8 @@ export interface GetIndicationResponse {
   serialNumber: string
   azimuth: number
   elevation: number
+  solarAzimuth: number
+  solarElevation: number
   windSpeed: number
   state: number[]
 }
