@@ -27,6 +27,7 @@ import { MonthlyProductionChart } from "./components/MonthlyProductionsChart"
 import { DailyProductionsChart } from "./components/DailyProductionsChart"
 import { YearlyProductionChart } from "./components/YearlyProductionsChart"
 import * as signalR from "@microsoft/signalr"
+import { IndicationsTable } from "./components/IndicationsTable"
 
 ChartJS.register(
   CategoryScale,
@@ -185,34 +186,6 @@ export const PowerplantDetails = () => {
     <Layout>
       <Container maxWidth="xl">
         <Box flexDirection={"column"} display="flex" minHeight="100vh">
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <Typography pr={1}>Azimuth: {indicationData?.azimuth}°</Typography>
-            <Typography pr={1}>
-              Elevation: {indicationData?.elevation}°
-            </Typography>
-            <Typography pr={1}>
-              Solar Azimuth: {indicationData?.solarAzimuth}°
-            </Typography>
-            <Typography pr={1}>
-              Solar Elevation: {indicationData?.solarElevation}°
-            </Typography>
-            <Typography pr={1}>
-              Wind speed: {indicationData?.windSpeed}
-            </Typography>
-            <Typography pr={1}>State: {indicationData?.state} </Typography>
-            <Typography pr={1}>
-              Today: {currentProduction?.dailyProduction} kWh
-            </Typography>
-            <Typography pr={1}>
-              Now: {currentProduction?.currentProduction} W
-            </Typography>
-          </Box>
           <Grid container rowSpacing={4} columnSpacing={2}>
             <Grid
               item
@@ -222,7 +195,20 @@ export const PowerplantDetails = () => {
               sm={12}
               xs={12}
             >
-              <Line options={options} data={chartData} />
+              {/* <Line options={options} data={chartData} /> */}
+              {indicationData && currentProduction && (
+                <IndicationsTable
+                  azimuth={indicationData.azimuth}
+                  elevation={indicationData.elevation}
+                  serialNumber={indicationData.serialNumber}
+                  windSpeed={indicationData.windSpeed}
+                  solarAzimuth={indicationData.solarAzimuth}
+                  solarElevation={indicationData.solarElevation}
+                  state={indicationData.state}
+                  currentProduction={currentProduction.currentProduction}
+                  dailyProduction={currentProduction.dailyProduction}
+                />
+              )}
             </Grid>
             <Grid
               item
