@@ -1,8 +1,8 @@
-import { Box, Container, Grid, Typography, makeStyles } from "@mui/material"
+import { Box, Container, Grid, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { Layout } from "../../components/Layout"
 import axios from "../../api/axios"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import {
   EnergyProduction,
   GetEnergyProductionsResponse,
@@ -22,10 +22,11 @@ import {
 import { Line } from "react-chartjs-2"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs, { Dayjs } from "dayjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MonthlyProductionChart } from "./components/MonthlyProductionsChart"
 import { DailyProductionsChart } from "./components/DailyProductionsChart"
 import { YearlyProductionChart } from "./components/YearlyProductionsChart"
+import * as signalR from "@microsoft/signalr"
 
 ChartJS.register(
   CategoryScale,
@@ -44,31 +45,76 @@ export const PowerplantDetails = () => {
   const [dailyDate, setDailyDate] = useState<Dayjs | null>(dayjs())
   const [monthlyDate, setMonthlyDate] = useState<Dayjs | null>(dayjs())
   const [yearlyDate, setYearlyDate] = useState<Dayjs | null>(dayjs())
-
+  const [indicationData, setIndicationData] =
+    useState<GetIndicationResponse | null>(null)
+  const [isSignalRConnected, setIsSignalRConnected] = useState<boolean>(false)
   const { serialNumber } = useParams()
 
-  const { data: indicationData, refetch: refetchIndication } = useQuery<
-    any,
-    any,
-    GetIndicationResponse
-  >(
-    ["/Indications/read"],
-    async () => {
-      const res = await axios.get(
-        `/Indications/read?serialNumber=${serialNumber}`
-      )
-      return res.data
-    },
-    {
-      onSuccess: async (response) => {
-        console.log("refetched")
-      },
-      onError: (error) => {
-        console.log("error getting energy production data: ", error)
-      },
-      refetchInterval: 2000,
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://www.solarsystem.somee.com/Indication", {
+      transport: signalR.HttpTransportType.ServerSentEvents,
+      withCredentials: true,
+    })
+    .configureLogging(signalR.LogLevel.Information)
+    .build()
+
+  const closeConnection = () => {
+    if (connection.state === signalR.HubConnectionState.Connected) {
+      connection.stop()
+      console.log("SignalR Connection Closed.")
+      setIsSignalRConnected(false)
     }
-  )
+  }
+
+  const connectToSignalR = async () => {
+    try {
+      await connection.start()
+      console.log("SignalR Connected.")
+      setIsSignalRConnected(true)
+      connection.invoke("JoinGroup", serialNumber)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (!isSignalRConnected) {
+      connectToSignalR()
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      closeConnection()
+    }
+  }, [])
+
+  connection.on("ReceiveIndication", (indication: GetIndicationResponse) => {
+    setIndicationData(indication)
+    console.log("indication", indication)
+  })
+
+  // const { data: indicationData, refetch: refetchIndication } = useQuery<
+  //   any,
+  //   any,
+  //   GetIndicationResponse
+  // >(
+  //   ["/Indications/read"],
+  //   async () => {
+  //     const res = await axios.get(
+  //       `/Indications/read?serialNumber=${serialNumber}`
+  //     )
+  //     return res.data
+  //   },
+  //   {
+  //     onSuccess: async (response) => {
+  //       console.log("refetched")
+  //     },
+  //     onError: (error) => {
+  //       console.log("error getting energy production data: ", error)
+  //     },
+  //   }
+  // )
 
   const { data, refetch } = useQuery<any, any, GetEnergyProductionsResponse>(
     ["/EnergyProduction/today", serialNumber],
@@ -134,8 +180,6 @@ export const PowerplantDetails = () => {
       },
     ],
   }
-
-  console.log("daily", dailyDate?.month())
 
   return (
     <Layout>
