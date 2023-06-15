@@ -11,10 +11,12 @@ import {
   Legend,
 } from "chart.js"
 import { Bar } from "react-chartjs-2"
+import { PaletteMode } from "@mui/material"
 
 interface YearlyProductionChartProps {
   serialNumber: string
   year: number
+  colorMode: PaletteMode
 }
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
@@ -22,6 +24,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export const YearlyProductionChart = ({
   serialNumber,
   year,
+  colorMode,
 }: YearlyProductionChartProps) => {
   const { data: yearlyProduction } = useQuery<
     any,
@@ -70,8 +73,6 @@ export const YearlyProductionChart = ({
         fill: true,
         label: "Energy kWh",
         data: values,
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   }

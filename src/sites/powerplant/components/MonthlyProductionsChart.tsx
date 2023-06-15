@@ -1,21 +1,25 @@
 import { useQuery } from "@tanstack/react-query"
 import { GetEnergyProductionsResponse } from "../../../models/api-models"
 import axios from "../../../api/axios"
+
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
   Title,
   Tooltip,
   Legend,
+  BarElement,
 } from "chart.js"
 import { Bar } from "react-chartjs-2"
+import { PaletteMode } from "@mui/material"
+import { useEffect } from "react"
 
 interface MonthlyProductionChartProps {
   serialNumber: string
   month: number
   year: number
+  colorMode: PaletteMode
 }
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
@@ -24,6 +28,7 @@ export const MonthlyProductionChart = ({
   serialNumber,
   month,
   year,
+  colorMode,
 }: MonthlyProductionChartProps) => {
   const { data: monthlyProduction } = useQuery<
     any,
@@ -52,7 +57,7 @@ export const MonthlyProductionChart = ({
 
   const numDays = new Date(year, month, 0).getDate()
 
-  const labels = Array.from({ length: numDays }, (_, index) => index + 1)
+  let labels = Array.from({ length: numDays }, (_, index) => index + 1)
 
   const productions = monthlyProduction?.energyProductions.filter(
     (v) => v !== undefined
@@ -78,8 +83,6 @@ export const MonthlyProductionChart = ({
         fill: true,
         label: "Energy kWh",
         data: values,
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   }

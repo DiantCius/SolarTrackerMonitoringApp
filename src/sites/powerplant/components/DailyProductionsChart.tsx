@@ -14,6 +14,7 @@ import { Line } from "react-chartjs-2"
 
 import { GetEnergyProductionsResponse } from "../../../models/api-models"
 import axios from "../../../api/axios"
+import { Box, PaletteMode } from "@mui/material"
 
 ChartJS.register(
   CategoryScale,
@@ -31,6 +32,7 @@ interface DailyProductionsChartProps {
   day: number
   month: number
   year: number
+  colorMode: PaletteMode
 }
 
 export const DailyProductionsChart = ({
@@ -38,6 +40,7 @@ export const DailyProductionsChart = ({
   year,
   month,
   day,
+  colorMode,
 }: DailyProductionsChartProps) => {
   const { data: dailyProduction, refetch } = useQuery<
     any,
@@ -86,8 +89,6 @@ export const DailyProductionsChart = ({
         data: dailyProduction?.energyProductions.map(
           (e) => e.currentProduction
         ),
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   }

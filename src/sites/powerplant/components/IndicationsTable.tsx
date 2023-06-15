@@ -55,7 +55,7 @@ export const IndicationsTable = ({
     createAngleData(azimuth, solarAzimuth, solarAzimuth - azimuth, state[1]),
     createAngleData(
       elevation,
-      solarElevation - 90,
+      solarElevation,
       -(elevation + (solarElevation - 90)),
       state[2]
     ),
@@ -76,13 +76,14 @@ export const IndicationsTable = ({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "center",
-        marginTop: 4,
       }}
     >
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
+            >
               <TableCell>Serial number </TableCell>
               <TableCell align="right">Current production</TableCell>
               <TableCell align="right">Daily production</TableCell>
@@ -91,10 +92,7 @@ export const IndicationsTable = ({
           </TableHead>
           <TableBody>
             {productionRows.map((row) => (
-              <TableRow
-                key={row.serialNumber}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
+              <TableRow key={row.serialNumber}>
                 <TableCell component="th" scope="row">
                   {row.serialNumber}
                 </TableCell>
@@ -107,7 +105,9 @@ export const IndicationsTable = ({
         </Table>
         <Table aria-label="simple table">
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
+            >
               <TableCell>Tracker angle </TableCell>
               <TableCell align="right">Solar angle</TableCell>
               <TableCell align="right">Diffrence</TableCell>
@@ -115,14 +115,17 @@ export const IndicationsTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {angleRows.map((row) => (
-              <TableRow
-                key={row.angle}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.angle}°
-                </TableCell>
+            {angleRows.map((row, index) => (
+              <TableRow key={row.angle}>
+                {index == 0 ? (
+                  <TableCell component="th" scope="row">
+                    Azimuth: {row.angle}°
+                  </TableCell>
+                ) : (
+                  <TableCell component="th" scope="row">
+                    Elevation: {row.angle}°
+                  </TableCell>
+                )}
                 <TableCell align="right">{row.solarAngle}°</TableCell>
                 <TableCell align="right">{row.diffrence}°</TableCell>
                 <TableCell align="right">{row.state}</TableCell>

@@ -19,8 +19,6 @@ import { Link } from "react-router-dom"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { UserContext } from "../contexts/UserContext"
 
-const settings = ["Profile", "Account", "Dashboard"]
-
 export const MyAppBar = () => {
   const theme = useTheme()
 
@@ -249,13 +247,14 @@ export const MyAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Link key={"profile"} to={PATHS.profile}>
+                  <Typography textAlign="center">Profile</Typography>
+                </Link>
+              </MenuItem>
               {isLoggedIn ? (
                 <MenuItem
+                  LinkComponent={Link}
                   onClick={() => {
                     logout()
                     handleCloseUserMenu()

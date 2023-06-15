@@ -1,4 +1,11 @@
-import { Box, Container, Grid, Typography } from "@mui/material"
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  makeStyles,
+  useTheme,
+} from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { Layout } from "../../components/Layout"
 import axios from "../../api/axios"
@@ -19,7 +26,6 @@ import {
   Filler,
   Legend,
 } from "chart.js"
-import { Line } from "react-chartjs-2"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs, { Dayjs } from "dayjs"
 import { useEffect, useState } from "react"
@@ -41,7 +47,17 @@ ChartJS.register(
 )
 
 export const PowerplantDetails = () => {
+  const theme = useTheme()
   const gridItemHeight = "40vh"
+  if (theme.palette.mode == "light") {
+    ChartJS.defaults.color = "black"
+  } else {
+    ChartJS.defaults.color = "white"
+  }
+  ChartJS.defaults.backgroundColor = "#9BD0F5"
+  ChartJS.defaults.borderColor = "#36A2EB"
+  ChartJS.defaults.font.size = 14
+  ChartJS.defaults.font.family = "Roboto, sans-serif"
 
   const [dailyDate, setDailyDate] = useState<Dayjs | null>(dayjs())
   const [monthlyDate, setMonthlyDate] = useState<Dayjs | null>(dayjs())
@@ -187,14 +203,7 @@ export const PowerplantDetails = () => {
       <Container maxWidth="xl">
         <Box flexDirection={"column"} display="flex" minHeight="100vh">
           <Grid container rowSpacing={4} columnSpacing={2}>
-            <Grid
-              item
-              style={{ height: gridItemHeight }}
-              xl={6}
-              md={6}
-              sm={12}
-              xs={12}
-            >
+            <Grid item xl={6} md={6} sm={12} xs={12} marginTop={4}>
               {/* <Line options={options} data={chartData} /> */}
               {indicationData && currentProduction && (
                 <IndicationsTable
@@ -210,6 +219,7 @@ export const PowerplantDetails = () => {
                 />
               )}
             </Grid>
+
             <Grid
               item
               style={{ height: gridItemHeight }}
@@ -217,15 +227,16 @@ export const PowerplantDetails = () => {
               md={6}
               sm={12}
               xs={12}
+              marginBottom={2}
             >
               <DailyProductionsChart
+                colorMode={theme.palette.mode}
                 serialNumber={serialNumber!}
                 day={dailyDate?.date()!}
                 month={dailyDate?.month()! + 1}
                 year={dailyDate?.year()!}
               />
               <DatePicker
-                sx={{ width: 175 }}
                 value={dailyDate}
                 onChange={(newValue) => setDailyDate(newValue)}
               />
@@ -237,14 +248,15 @@ export const PowerplantDetails = () => {
               md={6}
               sm={12}
               xs={12}
+              marginBottom={2}
             >
               <MonthlyProductionChart
+                colorMode={theme.palette.mode}
                 serialNumber={serialNumber!}
                 month={monthlyDate?.month()! + 1}
                 year={monthlyDate?.year()!}
               />
               <DatePicker
-                sx={{ width: 175 }}
                 views={["year", "month"]}
                 value={monthlyDate}
                 onChange={(newValue) => setMonthlyDate(newValue)}
@@ -257,20 +269,20 @@ export const PowerplantDetails = () => {
               md={6}
               sm={12}
               xs={12}
+              marginBottom={2}
             >
               <YearlyProductionChart
+                colorMode={theme.palette.mode}
                 serialNumber={serialNumber!}
                 year={yearlyDate?.year()!}
               />
               <DatePicker
-                sx={{ width: 175 }}
                 views={["year"]}
                 value={yearlyDate}
                 onChange={(newValue) => setYearlyDate(newValue)}
               />
             </Grid>
           </Grid>
-
           {/* <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {data &&
             data.energyProductions.map((ep) => (

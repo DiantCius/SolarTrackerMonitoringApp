@@ -16,6 +16,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             paddingY: 4,
             marginLeft: "auto",
             marginRight: "auto",
+            marginBottom: 4,
             flex: 1,
             flexDirection: "column",
             flexGrow: 1,
