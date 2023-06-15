@@ -13,7 +13,7 @@ import {
 } from "chart.js"
 import { Bar } from "react-chartjs-2"
 import { PaletteMode } from "@mui/material"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 interface MonthlyProductionChartProps {
   serialNumber: string
@@ -53,6 +53,18 @@ export const MonthlyProductionChart = ({
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          color: colorMode === "dark" ? "white" : "black", // Change the x and y axis label color here
+        },
+      },
+      y: {
+        ticks: {
+          color: colorMode === "dark" ? "white" : "black", // Change the x and y axis label color here
+        },
+      },
+    },
   }
 
   const numDays = new Date(year, month, 0).getDate()

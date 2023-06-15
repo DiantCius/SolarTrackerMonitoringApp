@@ -51,6 +51,18 @@ export const YearlyProductionChart = ({
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          color: colorMode === "dark" ? "white" : "black", // Change the x and y axis label color here
+        },
+      },
+      y: {
+        ticks: {
+          color: colorMode === "dark" ? "white" : "black", // Change the x and y axis label color here
+        },
+      },
+    },
   }
 
   const values: number[] = []

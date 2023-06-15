@@ -85,9 +85,9 @@ export const IndicationsTable = ({
               sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
             >
               <TableCell>Serial number </TableCell>
-              <TableCell align="right">Current production</TableCell>
-              <TableCell align="right">Daily production</TableCell>
-              <TableCell align="right">Wind speed</TableCell>
+              <TableCell align="right">Now</TableCell>
+              <TableCell align="right">Today</TableCell>
+              <TableCell align="right">Wind</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
