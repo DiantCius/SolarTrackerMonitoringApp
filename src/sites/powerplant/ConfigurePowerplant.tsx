@@ -174,6 +174,7 @@ export const ConfigurePowerplant = () => {
       azimuthStart: props.azimuthStart,
       minElevation: props.minElevation,
       maxAzimuth: props.maxAzimuth,
+      minAzimuth: props.minAzimuth,
       windSpeedThreshold: props.windSpeedThreshold,
     }
     console.log("driver props:", driverProps)
