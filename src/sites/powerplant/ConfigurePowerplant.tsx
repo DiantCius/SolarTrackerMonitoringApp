@@ -276,7 +276,7 @@ export const ConfigurePowerplant = () => {
                 id="minElevation"
                 label="minElevation"
                 type="number"
-                defaultValue={-50}
+                defaultValue={50}
                 inputProps={{
                   step: 1,
                 }}
