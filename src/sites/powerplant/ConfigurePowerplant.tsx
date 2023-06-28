@@ -32,6 +32,7 @@ type ConfigurePowerplantFormProps = {
   azimuthStart: number
   minElevation: number
   maxAzimuth: number
+  minAzimuth: number
   windSpeedThreshold: number
 }
 
@@ -42,12 +43,12 @@ const configurePowerplantValidationSchema = Yup.object().shape({
     .max(180)
     .required("Coordinates are required"),
   minElevation: Yup.number()
-    .min(-80)
-    .max(-40)
+    .min(30)
+    .max(80)
     .required("Min elevation angle required"),
   elevationStart: Yup.number()
-    .min(-80)
-    .max(0)
+    .min(-2)
+    .max(80)
     .required("Elevation starting position required"),
   azimuthStart: Yup.number()
     .min(50)
@@ -56,6 +57,10 @@ const configurePowerplantValidationSchema = Yup.object().shape({
   maxAzimuth: Yup.number()
     .min(200)
     .max(300)
+    .required("Max azimuth angle required"),
+  minAzimuth: Yup.number()
+    .min(50)
+    .max(100)
     .required("Max azimuth angle required"),
   windSpeedThreshold: Yup.number()
     .min(15)
@@ -215,7 +220,7 @@ export const ConfigurePowerplant = () => {
           minHeight="100vh"
         >
           <Typography>
-            Powerplant server connection status:{" "}
+            Powerplant:{" "}
             {data?.connectionStatus == 1 ? "connected" : "disconnected"}
           </Typography>
           <Typography component="h1" variant="h5">
@@ -230,8 +235,7 @@ export const ConfigurePowerplant = () => {
             CONNECT TO BLUETOOTH DEVICE
           </Button>
           <Typography>
-            Bluetooth connection status:{" "}
-            {bleConnected ? "connected" : "disconnected"}
+            Bluetooth: {bleConnected ? "connected" : "disconnected"}
           </Typography>
           {bleConnected ? (
             <>
@@ -296,6 +300,22 @@ export const ConfigurePowerplant = () => {
               />
               <Typography variant="inherit" color="error">
                 {configErrors.maxAzimuth?.message}
+              </Typography>
+              <TextField
+                required
+                sx={{ mt: 2, width: "100%" }}
+                id="minAzimuth"
+                label="minAzimuth"
+                type="number"
+                defaultValue={68.81}
+                inputProps={{
+                  step: 0.1,
+                }}
+                {...registerConfig("minAzimuth")}
+                error={configErrors.minAzimuth ? true : false}
+              />
+              <Typography variant="inherit" color="error">
+                {configErrors.minAzimuth?.message}
               </Typography>
               <TextField
                 required
