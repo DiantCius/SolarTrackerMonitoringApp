@@ -14,6 +14,7 @@ export interface Powerplant {
   tariff: string
   powerplantType: number
   serialNumber: string
+  city: string
   connectionStatus: number
 }
 

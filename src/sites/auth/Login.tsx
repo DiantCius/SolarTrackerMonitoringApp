@@ -56,7 +56,7 @@ export const Login = () => {
     {
       onSuccess: async (response) => {
         userContext.login(response.token)
-        navigate(PATHS.home)
+        navigate(PATHS.powerplantList)
       },
       onError: (error) => {
         console.log("login error xd", error)

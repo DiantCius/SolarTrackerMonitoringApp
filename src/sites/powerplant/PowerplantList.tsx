@@ -82,7 +82,7 @@ export const PowerplantList = () => {
                     )
                   }
                 >
-                  <ListItemText primary={e.name} secondary={e.tariff} />
+                  <ListItemText primary={e.name} secondary={e.city} />
                 </ListItem>
               ))}
           </List>

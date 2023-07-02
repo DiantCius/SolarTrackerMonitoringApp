@@ -117,11 +117,6 @@ export const MyAppBar = () => {
                         <Typography textAlign="center">HOME</Typography>
                       </MenuItem>
                     </Link>,
-                    <Link key={"profile"} to={PATHS.profile}>
-                      <MenuItem onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center">PROFILE</Typography>
-                      </MenuItem>
-                    </Link>,
                     <Link key={"powerplantList"} to={PATHS.powerplantList}>
                       <MenuItem onClick={handleCloseNavMenu}>
                         <Typography textAlign="center">POWERPLANTS</Typography>
@@ -184,14 +179,6 @@ export const MyAppBar = () => {
                       HOME
                     </Button>
                   </Link>,
-                  <Link key={"profile"} to={PATHS.profile}>
-                    <Button
-                      onClick={handleCloseNavMenu}
-                      sx={{ my: 2, color: "white", display: "block" }}
-                    >
-                      PROFILE
-                    </Button>
-                  </Link>,
                 ]
               : [
                   <Link key={"login"} to={PATHS.login}>
@@ -248,8 +235,8 @@ export const MyAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
-                <Link key={"profile"} to={PATHS.profile}>
-                  <Typography textAlign="center">Profile</Typography>
+                <Link key={"home"} to={PATHS.home}>
+                  <Typography textAlign="center">Home</Typography>
                 </Link>
               </MenuItem>
               {isLoggedIn ? (
