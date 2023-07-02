@@ -126,8 +126,10 @@ export const IndicationsTable = ({
                     Elevation: {row.angle}°
                   </TableCell>
                 )}
-                <TableCell align="right">{row.solarAngle}°</TableCell>
-                <TableCell align="right">{row.diffrence}°</TableCell>
+                <TableCell align="right">
+                  {row.solarAngle.toFixed(2)}°
+                </TableCell>
+                <TableCell align="right">{row.diffrence.toFixed(2)}°</TableCell>
                 <TableCell align="right">{row.state}</TableCell>
               </TableRow>
             ))}
